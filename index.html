@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Sister</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;600&family=Great+Vibes&family=Indie+Flower&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    
+    <style>
+        /* --- 1. THEME: ART DESK --- */
+        :root {
+            --desk-bg: #f3e5f5; /* Light purple desk */
+            --sketch-paper: #fffbf0; /* Creamy paper */
+            --text-main: #c2185b;
+            --accent: #d4af37; /* Gold */
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--desk-bg);
+            font-family: 'Indie Flower', 'Poppins', sans-serif; /* Hand-drawn feel */
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            perspective: 2000px; /* Needed for 3D effect */
+        }
+
+        /* --- 2. SURROUNDING ART TOOLS (CSS DRAWINGS) --- */
+        .art-tool { position: absolute; z-index: 0; pointer-events: none; filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.1)); }
+
+        /* Pencils */
+        .pencil { width: 150px; height: 12px; background: #ffcc80; border-radius: 2px; }
+        .pencil::after { content:''; position: absolute; right: -15px; top: 0; border-left: 15px solid #fdd835; border-top: 6px solid transparent; border-bottom: 6px solid transparent; } /* Tip */
+        .p1 { top: 10%; left: 5%; transform: rotate(45deg); background: #ef9a9a; } /* Pink pencil */
+        .p2 { bottom: 15%; right: 10%; transform: rotate(-20deg); background: #90caf9; } /* Blue pencil */
+
+        /* Brush */
+        .brush { top: 20%; right: 5%; width: 180px; height: 10px; background: #a1887f; transform: rotate(-65deg); border-radius: 5px; }
+        .brush::before { content:''; position: absolute; left: -20px; top: -5px; width: 25px; height: 20px; background: #d81b60; border-radius: 50% 50% 5% 5%; } /* Bristles */
+
+        /* Palette */
+        .palette { bottom: 5%; left: 10%; width: 120px; height: 90px; background: #d7ccc8; border-radius: 50%; transform: rotate(15deg); }
+        .paint-blob { position: absolute; width: 20px; height: 20px; border-radius: 50%; box-shadow: inset 2px 2px 5px rgba(0,0,0,0.2); }
+
+        /* Eraser */
+        .eraser { top: 5%; right: 30%; width: 60px; height: 30px; background: #f8bbd0; transform: rotate(10deg); border-radius: 3px; }
+
+
+        /* --- 3. THE DRAWING BOOK CONTAINER --- */
+        .sketchpad-container {
+            width: 360px;
+            height: 550px;
+            position: relative;
+            z-index: 10;
+            /* Spiral Binding Visual at Top */
+            border-top: 25px solid #ddd;
+            background-image: repeating-linear-gradient(90deg, transparent, transparent 15px, #999 15px, #999 18px);
+            border-radius: 5px 5px 10px 10px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+        }
+
+        /* --- 4. PAGES (VERTICAL FLIP STACK) --- */
+        .page {
+            position: absolute;
+            top: 0; /* Aligned right below the binding */
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 30px 20px;
+            background: var(--sketch-paper);
+            /* Subtle paper texture */
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zM32 63c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm57-13c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23d81b60' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E");
+            border-radius: 0 0 5px 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            
+            /* 3D PIVOT SETTINGS FOR TOP FLIP */
+            transform-origin: top center; /* IMPORTANT: Flips from top */
+            transform-style: preserve-3d;
+            transition: transform 1.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+            backface-visibility: hidden; /* Hides page when flipped up */
+        }
+
+        /* The Flip Action */
+        .page.flipped {
+            transform: rotateX(180deg); /* Flips vertically */
+        }
+
+        /* Z-INDEX STACKING */
+        #s1 { z-index: 5; }
+        #s2 { z-index: 4; }
+        #s3 { z-index: 3; }
+        #s4 { z-index: 2; }
+
+        /* --- 5. TYPOGRAPHY & ELEMENTS --- */
+        h1 {
+            font-family: 'Playfair Display', serif;
+            color: var(--text-main);
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        p {
+            color: #880e4f;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            font-size: 1.1rem;
+            font-family: 'Indie Flower', cursive; /* Handwritten look */
+            font-weight: bold;
+        }
+
+        /* RAKHI */
+        .wrist-container {
+            position: relative;
+            width: 200px; height: 60px; background: #e0ac69; border-radius: 30px; margin: 20px auto;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.2), 2px 2px 5px rgba(0,0,0,0.1); /* Added shadow for depth on paper */
+            display: flex; align-items: center; justify-content: center;
+        }
+        .thread { position: absolute; width: 0%; height: 6px; background: repeating-linear-gradient(45deg, #d81b60, #d81b60 10px, #ffd700 10px, #ffd700 20px); transition: width 2s ease-in-out; border-radius: 4px; z-index: 2; }
+        .knot { width: 40px; height: 40px; background: radial-gradient(circle, #fff, #ffd700); border: 2px solid #daa520; border-radius: 50%; position: absolute; transform: scale(0); transition: transform 0.5s; transition-delay: 2s; z-index: 3; display: flex; justify-content: center; align-items: center; font-size: 18px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+
+        /* BUTTONS */
+        .btn {
+            background: #d81b60; color: white; border: none; padding: 12px 30px; border-radius: 50px;
+            font-size: 1rem; font-family: 'Indie Flower', cursive; cursor: pointer;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.2); transition: transform 0.2s;
+        }
+        .btn:hover { transform: scale(1.05); background: #ad1457; }
+
+        /* FINAL MESSAGE */
+        .final-box { opacity: 0; margin-top: 15px; transform: scale(0.5); transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .bday-wish { font-family: 'Great Vibes', cursive; font-size: 2.5rem; color: #c2185b; line-height: 1.2; }
+    </style>
+</head>
+<body>
+
+    <audio id="bg-music" src="song.mp3"></audio>
+
+    <div class="art-tool pencil p1"></div>
+    <div class="art-tool pencil p2"></div>
+    <div class="art-tool brush"></div>
+    <div class="art-tool eraser"></div>
+    <div class="art-tool palette">
+        <div class="paint-blob" style="background:#d81b60; top:10px; left:15px;"></div>
+        <div class="paint-blob" style="background:#ffd700; top:15px; left:45px;"></div>
+        <div class="paint-blob" style="background:#1e88e5; top:40px; left:25px;"></div>
+        <div class="paint-blob" style="background:#43a047; top:45px; left:60px;"></div>
+    </div>
+
+
+    <div class="sketchpad-container">
+        
+        <div class="page" id="s1">
+            <div style="font-size: 3rem; margin-bottom: 20px;">📅</div>
+            <h1>November 2021</h1>
+            <p>A sister from another mother.</p>
+            <p>For the last 4 years, you have treated me like your own blood. A bond defined not by DNA, but by Love.</p>
+            <button class="btn" onclick="flipPage(1)">Continue</button>
+        </div>
+
+        <div class="page" id="s2">
+            <h1 style="color: #ad1457;">I'm Sorry</h1>
+            <p>I know I haven't been the perfect brother. I have hurt you many times.</p>
+            <p>But you never doubted me. You treated me like your own blood, even when I didn't deserve it.</p>
+            <button class="btn" onclick="flipPage(2)">So now...</button>
+        </div>
+
+        <div class="page" id="s3">
+            <h1 style="color: #d4af37;">Happy Birthday Billi</h1>
+            <p>Today is your special day.</p>
+            <p>I didn't want to just give you a normal wish. I wanted to give you the one thing we missed.</p>
+            <button class="btn" onclick="flipPage(3)">Your Gift 🎁</button>
+        </div>
+
+        <div class="page" id="s4">
+            <h1>The Rakhi</h1>
+            <p>Tap below to finally tie the Rakhi on my wrist.</p>
+            
+            <div class="wrist-container">
+                <div class="thread" id="rakhi-thread"></div>
+                <div class="knot" id="rakhi-knot">🕉️</div>
+            </div>
+
+            <button class="btn" id="tie-btn" onclick="tieRakhi()">Tie The Thread</button>
+            
+            <div class="final-box" id="final-msg">
+                <div class="bday-wish">Happy Birthday Mansvi!</div>
+                <p style="margin-top:10px; font-weight:bold; color:#c2185b;">Bonded Forever.</p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // 1. PAGE FLIP LOGIC (VERTICAL)
+        function flipPage(pageId) {
+            // Music on first interaction
+            if(pageId === 1) {
+                var audio = document.getElementById("bg-music");
+                if(audio) audio.play().catch(e => console.log("Audio requires click"));
+            }
+
+            // Flip the current page UP
+            document.getElementById('s' + pageId).classList.add('flipped');
+
+            // --- BOMB 1: IF REVEALING PAGE 3 ---
+            if(pageId === 2) {
+                setTimeout(() => {
+                    fireBomb();
+                }, 600); 
+            }
+        }
+
+        // 2. RAKHI LOGIC
+        function tieRakhi() {
+            document.getElementById('tie-btn').style.display = 'none';
+            let thread = document.getElementById('rakhi-thread');
+            thread.style.width = '100%';
+
+            setTimeout(() => {
+                let knot = document.getElementById('rakhi-knot');
+                knot.style.transform = 'scale(1.2)';
+                let msg = document.getElementById('final-msg');
+                msg.style.opacity = '1';
+                msg.style.transform = 'scale(1)';
+
+                // --- BOMB 2: RAKHI TIED ---
+                fireBomb();
+            }, 2500);
+        }
+
+        // 3. CONFETTI BOMB (Pink/Art Theme Colors)
+        function fireBomb() {
+            confetti({
+                particleCount: 150,
+                spread: 100,
+                origin: { y: 0.6 },
+                colors: ['#FF69B4', '#FFD700', '#FFFFFF', '#C71585', '#1e88e5'], /* Added blue for art pop */
+                startVelocity: 45,
+                scalar: 1.2
+            });
+        }
+    </script>
+</body>
+</html>
