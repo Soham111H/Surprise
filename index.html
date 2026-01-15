@@ -36,6 +36,38 @@
             perspective: 2000px;
         }
 
+        /* --- NEW: TIME LOCK SCREEN --- */
+        #lock-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(243, 238, 240, 0.98); /* High opacity to hide content */
+            z-index: 9999; /* On top of everything */
+            display: flex; justify-content: center; align-items: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .lock-box {
+            background: #fff;
+            padding: 40px;
+            width: 85%;
+            max-width: 400px;
+            border-radius: 5px;
+            border: 1px solid #d4af37;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+            text-align: center;
+        }
+
+        .lock-icon { font-size: 3rem; color: #a62639; margin-bottom: 20px; }
+        .lock-title { font-family: 'Cinzel', serif; font-size: 1.5rem; color: #4a3b3b; margin-bottom: 15px; }
+        .lock-msg { font-family: 'Poppins', sans-serif; color: #666; line-height: 1.6; font-size: 1rem; }
+        .lock-time { 
+            display: block; margin-top: 15px; 
+            font-weight: bold; color: #d4af37; 
+            font-family: 'Cinzel', serif; letter-spacing: 1px;
+            border-top: 1px solid #eee; padding-top: 15px;
+        }
+
+
         /* --- 2. ART PROPS --- */
         .art-prop {
             position: absolute;
@@ -221,18 +253,16 @@
         .btn:hover { background: var(--ink-color); color: #fff; }
 
         /* --- 9. FINAL MESSAGE --- */
-        .final-box { opacity: 0; margin-top: 15px; transform: scale(0.8); transition: all 0.8s ease; }
-        .bday-wish { font-family: 'Great Vibes', cursive; font-size: 2.2rem; color: #a62639; line-height: 1.2; }
+        .final-box { opacity: 0; margin-top: 20px; transform: scale(0.8); transition: all 0.8s ease; }
+        .bday-wish { font-family: 'Great Vibes', cursive; font-size: 2.5rem; color: #a62639; line-height: 1.2; }
         .sub-wish { font-family: 'Cinzel', serif; font-size: 0.7rem; color: #888; margin-top: 10px; letter-spacing: 3px; text-transform: uppercase; }
 
-        /* --- 10. MOBILE OPTIMIZATION (THE FIX) --- */
+        /* --- 10. MOBILE OPTIMIZATION --- */
         @media (max-width: 600px) {
-            /* 1. Move props out of the way */
             .prop-pencil { transform: scale(0.6) rotate(-15deg); top: 0%; right: -120px; }
             .prop-brush { transform: scale(0.6) rotate(25deg); bottom: 0%; left: -120px; }
             .prop-palette { transform: scale(0.6) rotate(-10deg); top: 0%; left: -50px; }
             
-            /* 2. Position Polaroids */
             .polaroid { width: 100px; padding: 5px 5px 20px 5px; }
             .polaroid img { height: 80px; }
             .polaroid-caption { font-size: 0.8rem; }
@@ -241,27 +271,17 @@
             .p2 { top: 2%; right: 2%; transform: scale(0.8) rotate(5deg); }
             .p3 { bottom: 2%; left: 50%; transform: translate(-50%, 0) scale(0.8) rotate(-3deg); }
 
-            /* 3. COMPACT CONTENT FOR SMALL SCREENS */
             .book { width: 95vw; height: 75vh; }
             
-            /* Reduce Margins */
             h1 { font-size: 1.6rem; margin-bottom: 10px; }
             p { font-size: 0.9rem; line-height: 1.4; margin-bottom: 15px; }
             
-            /* Make Wrist Smaller & Fit Better */
-            .wrist-container { 
-                height: 50px; 
-                max-width: 180px; 
-                margin: 15px auto; /* Reduced margin */
-            }
+            .wrist-container { height: 50px; max-width: 180px; margin: 15px auto; }
             .thread { height: 4px; }
             .knot { width: 30px; height: 30px; font-size: 14px; }
             
-            /* Adjust final message size */
             .bday-wish { font-size: 1.8rem; }
             .final-box { margin-top: 10px; }
-
-            /* Adjust Slide Padding */
             .page { padding: 15px 10px; }
         }
 
@@ -269,6 +289,15 @@
 </head>
 <body>
 
+    <div id="lock-screen" style="display:flex;">
+        <div class="lock-box">
+            <div class="lock-icon"><i class="fas fa-lock"></i></div>
+            <div class="lock-title">Locked</div>
+            <div class="lock-msg">This webpage is locked until the special moment arrives.</div>
+            <div class="lock-time">Opens at 17:01</div>
+        </div>
+    </div>
+    
     <audio id="bg-music" src="song.mp3"></audio>
     <audio id="flip-sound" src="flip.mp3"></audio>
 
@@ -299,7 +328,7 @@
         
         <div class="page" id="s1">
             <div class="page-content">
-                <div style="font-size: 3rem; margin-bottom: 15px; color: #d4af37;">from</div>
+                <div style="font-size: 3rem; margin-bottom: 15px; color: #d4af37;">❧</div>
                 <h1>November 2021</h1>
                 <p>A sister from another mother.</p>
                 <p>For the last 4 years, you have treated me like your own blood. A bond defined not by DNA, but by Love.</p>
@@ -312,7 +341,7 @@
                 <h1 style="color: #a62639;">My Apology</h1>
                 <p>I know I haven't been the perfect brother. I have hurt you many times.</p>
                 <p>But you never doubted me. You treated me like your own blood, even when I didn't deserve it.</p>
-                <div class="signature">- Shadow</div>
+                <div class="signature">- Your Brother</div>
                 <button class="btn" onclick="flipPage(2)">Continue</button>
             </div>
         </div>
@@ -348,6 +377,22 @@
     </div>
 
     <script>
+        // 0. TIME LOCK CHECK
+        window.onload = function() {
+            // Target: Jan 17, 2026 at 17:01:00
+            const unlockDate = new Date('January 17, 2026 17:01:00').getTime();
+            const now = new Date().getTime();
+            const lockScreen = document.getElementById('lock-screen');
+
+            if (now >= unlockDate) {
+                // If time has passed, hide lock screen immediately
+                lockScreen.style.display = 'none';
+            } else {
+                // Keep showing it
+                lockScreen.style.display = 'flex';
+            }
+        };
+
         // 1. PAGE FLIP LOGIC
         function flipPage(pageId) {
             if(pageId === 1) {
