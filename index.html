@@ -3,13 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Happy Birthday Sister</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Great+Vibes&display=swap" rel="stylesheet">
+    <title>Surprise</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎁</text></svg>">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Great+Vibes&family=Indie+Flower&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     
     <style>
-        /* --- 1. THEME: RICH ART STUDIO --- */
+        /* --- 1. THEME --- */
         :root {
             --bg-color: #f3eef0; 
             --paper-color: #fdfbf7;
@@ -30,11 +32,11 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden; /* Prevents scrollbars */
+            overflow: hidden;
             perspective: 2000px;
         }
 
-        /* --- 2. SURROUNDING ART PROPS (Responsive) --- */
+        /* --- 2. ART PROPS --- */
         .art-prop {
             position: absolute;
             z-index: 1; 
@@ -43,18 +45,16 @@
             transition: all 0.5s ease;
         }
 
-        /* Gold Pencil */
         .prop-pencil {
             width: 300px; height: 18px;
             background: linear-gradient(to bottom, #e6c27e, #b8924b);
-            top: 10%; right: -50px;
+            top: 5%; right: -50px;
             transform: rotate(-15deg);
             border-radius: 2px;
         }
         .prop-pencil::before { content:''; position: absolute; left: -25px; top: 0; width: 25px; height: 100%; background: #e09fac; border-radius: 3px 0 0 3px; }
         .prop-pencil::after { content:''; position: absolute; left: 0; top: 0; width: 15px; height: 100%; background: linear-gradient(to bottom, #ccc, #888); }
 
-        /* Paintbrush */
         .prop-brush {
             width: 350px; height: 12px;
             background: #5d4037;
@@ -65,7 +65,6 @@
         .prop-brush::after { content:''; position: absolute; right: -30px; top: -4px; width: 40px; height: 20px; background: #333; border-radius: 0 50% 50% 0; }
         .prop-brush::before { content:''; position: absolute; right: -28px; top: -4px; width: 20px; height: 20px; background: var(--rose-gold); border-radius: 0 50% 50% 0; opacity: 0.8; }
 
-        /* Palette Swatch */
         .prop-palette {
             width: 120px; height: 120px;
             background: #fff;
@@ -77,20 +76,49 @@
         }
         .paint-blob { position: absolute; width: 30px; height: 30px; border-radius: 50%; opacity: 0.8; box-shadow: inset 2px 2px 5px rgba(0,0,0,0.2); }
 
-        /* --- 3. BOOK CONTAINER (Responsive) --- */
+        /* --- 3. POLAROIDS --- */
+        .polaroid {
+            position: absolute;
+            background: #fff;
+            padding: 10px 10px 35px 10px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            z-index: 2; 
+            pointer-events: auto;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            width: 140px;
+        }
+        
+        .polaroid img {
+            width: 100%; height: 120px; object-fit: cover;
+            filter: sepia(30%) contrast(1.1); border: 1px solid #eee;
+        }
+
+        .polaroid-caption {
+            font-family: 'Indie Flower', cursive;
+            text-align: center; color: #555; margin-top: 8px; font-weight: bold; font-size: 1rem;
+        }
+
+        .polaroid:hover {
+            transform: scale(1.2) rotate(0deg) !important;
+            z-index: 50;
+            cursor: pointer;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        /* Desktop Positions */
+        .p1 { top: 25%; left: 8%; transform: rotate(-8deg); }
+        .p2 { top: 15%; right: 10%; transform: rotate(6deg); }
+        .p3 { bottom: 10%; right: 15%; transform: rotate(-5deg); }
+
+
+        /* --- 4. BOOK CONTAINER --- */
         .book {
-            /* Responsive Dimensions */
-            width: 90vw; 
-            max-width: 400px; 
-            height: 80vh; 
-            max-height: 600px;
-            
+            width: 90vw; max-width: 420px; 
+            height: 75vh; max-height: 600px;
             position: relative;
             z-index: 10;
             perspective: 1500px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            display: flex; justify-content: center; align-items: center;
         }
 
         .book::after {
@@ -98,14 +126,12 @@
             background: rgba(0,0,0,0.2); filter: blur(20px); z-index: -1; transform: translateZ(-50px);
         }
 
-        /* --- 4. PAGES --- */
+        /* --- 5. PAGES --- */
         .page {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             padding: 30px 20px;
-            
             background-color: var(--paper-color);
             background-image: url("data:image/svg+xml,%3Csvg width='4' height='4' viewBox='0 0 4 4' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 3h1v1H1V3zm2-2h1v1H3V1z' fill='%23bcaaa4' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
-            
             border-radius: 2px 10px 10px 2px;
             border: 1px solid #e0e0e0;
             box-shadow: inset 20px 0 30px rgba(0,0,0,0.03), 1px 1px 5px rgba(0,0,0,0.1);
@@ -130,7 +156,7 @@
             display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
 
-        /* --- 5. TYPOGRAPHY (Responsive) --- */
+        /* --- 6. TYPOGRAPHY --- */
         h1 {
             font-family: 'Cinzel', serif;
             color: var(--ink-color);
@@ -148,7 +174,15 @@
             font-style: italic;
         }
 
-        /* --- 6. RAKHI --- */
+        .signature {
+            font-family: 'Great Vibes', cursive;
+            font-size: 1.8rem;
+            color: #a62639;
+            margin-bottom: 20px;
+            transform: rotate(-5deg);
+        }
+
+        /* --- 7. RAKHI --- */
         .wrist-container {
             position: relative; width: 100%; max-width: 220px; height: 60px;
             background: linear-gradient(to bottom, #decab6, #c5a990);
@@ -174,7 +208,7 @@
             font-size: 20px; color: #a62639;
         }
 
-        /* --- 7. BUTTONS --- */
+        /* --- 8. BUTTONS --- */
         .btn {
             background: transparent;
             color: var(--ink-color);
@@ -186,27 +220,49 @@
         }
         .btn:hover { background: var(--ink-color); color: #fff; }
 
-        /* --- 8. FINAL MESSAGE --- */
-        .final-box { opacity: 0; margin-top: 20px; transform: scale(0.8); transition: all 0.8s ease; }
-        .bday-wish { font-family: 'Great Vibes', cursive; font-size: 2.5rem; color: #a62639; line-height: 1.2; }
+        /* --- 9. FINAL MESSAGE --- */
+        .final-box { opacity: 0; margin-top: 15px; transform: scale(0.8); transition: all 0.8s ease; }
+        .bday-wish { font-family: 'Great Vibes', cursive; font-size: 2.2rem; color: #a62639; line-height: 1.2; }
         .sub-wish { font-family: 'Cinzel', serif; font-size: 0.7rem; color: #888; margin-top: 10px; letter-spacing: 3px; text-transform: uppercase; }
 
-        /* --- MOBILE ADJUSTMENTS --- */
+        /* --- 10. MOBILE OPTIMIZATION (THE FIX) --- */
         @media (max-width: 600px) {
-            /* Scale props down so they don't block view */
-            .prop-pencil { transform: scale(0.6) rotate(-15deg); top: 5%; right: -80px; }
-            .prop-brush { transform: scale(0.6) rotate(25deg); bottom: 2%; left: -100px; }
-            .prop-palette { transform: scale(0.7) rotate(-10deg); top: 2%; left: -20px; }
+            /* 1. Move props out of the way */
+            .prop-pencil { transform: scale(0.6) rotate(-15deg); top: 0%; right: -120px; }
+            .prop-brush { transform: scale(0.6) rotate(25deg); bottom: 0%; left: -120px; }
+            .prop-palette { transform: scale(0.6) rotate(-10deg); top: 0%; left: -50px; }
             
-            /* Adjust fonts for small screens */
-            h1 { font-size: 1.8rem; margin-bottom: 15px; }
-            p { font-size: 1rem; line-height: 1.5; margin-bottom: 20px; }
-            
-            /* Maximize book size on mobile */
+            /* 2. Position Polaroids */
+            .polaroid { width: 100px; padding: 5px 5px 20px 5px; }
+            .polaroid img { height: 80px; }
+            .polaroid-caption { font-size: 0.8rem; }
+
+            .p1 { top: 2%; left: 2%; transform: scale(0.8) rotate(-5deg); }
+            .p2 { top: 2%; right: 2%; transform: scale(0.8) rotate(5deg); }
+            .p3 { bottom: 2%; left: 50%; transform: translate(-50%, 0) scale(0.8) rotate(-3deg); }
+
+            /* 3. COMPACT CONTENT FOR SMALL SCREENS */
             .book { width: 95vw; height: 75vh; }
             
-            /* Prevent overflow on the wrist */
-            .wrist-container { width: 90%; }
+            /* Reduce Margins */
+            h1 { font-size: 1.6rem; margin-bottom: 10px; }
+            p { font-size: 0.9rem; line-height: 1.4; margin-bottom: 15px; }
+            
+            /* Make Wrist Smaller & Fit Better */
+            .wrist-container { 
+                height: 50px; 
+                max-width: 180px; 
+                margin: 15px auto; /* Reduced margin */
+            }
+            .thread { height: 4px; }
+            .knot { width: 30px; height: 30px; font-size: 14px; }
+            
+            /* Adjust final message size */
+            .bday-wish { font-size: 1.8rem; }
+            .final-box { margin-top: 10px; }
+
+            /* Adjust Slide Padding */
+            .page { padding: 15px 10px; }
         }
 
     </style>
@@ -214,6 +270,7 @@
 <body>
 
     <audio id="bg-music" src="song.mp3"></audio>
+    <audio id="flip-sound" src="flip.mp3"></audio>
 
     <div class="art-prop prop-pencil"></div>
     <div class="art-prop prop-brush"></div>
@@ -222,12 +279,27 @@
         <div class="paint-blob" style="background:#d4af37; top:20px; right:20px;"></div>
         <div class="paint-blob" style="background:#a62639; bottom:20px; left:40px;"></div>
     </div>
+    
+    <div class="polaroid p1">
+        <img src="photo1.jpg" alt="Us">
+        <div class="polaroid-caption">Beyond Blood</div>
+    </div>
+
+    <div class="polaroid p2">
+        <img src="photo2.jpg" alt="Us">
+        <div class="polaroid-caption">My Keeper</div>
+    </div>
+
+    <div class="polaroid p3">
+        <img src="photo3.jpg" alt="Us">
+        <div class="polaroid-caption">Unbreakable</div>
+    </div>
 
     <div class="book">
         
         <div class="page" id="s1">
             <div class="page-content">
-                <div style="font-size: 3rem; margin-bottom: 20px; color: #d4af37;">from</div>
+                <div style="font-size: 3rem; margin-bottom: 15px; color: #d4af37;">from</div>
                 <h1>November 2021</h1>
                 <p>A sister from another mother.</p>
                 <p>For the last 4 years, you have treated me like your own blood. A bond defined not by DNA, but by Love.</p>
@@ -240,6 +312,7 @@
                 <h1 style="color: #a62639;">My Apology</h1>
                 <p>I know I haven't been the perfect brother. I have hurt you many times.</p>
                 <p>But you never doubted me. You treated me like your own blood, even when I didn't deserve it.</p>
+                <div class="signature">- Shadow</div>
                 <button class="btn" onclick="flipPage(2)">Continue</button>
             </div>
         </div>
@@ -281,6 +354,8 @@
                 var audio = document.getElementById("bg-music");
                 if(audio) audio.play().catch(e => console.log("Audio requires click"));
             }
+            var flip = document.getElementById("flip-sound");
+            if(flip) { flip.currentTime = 0; flip.play(); }
 
             document.getElementById('s' + pageId).classList.add('flipped');
 
